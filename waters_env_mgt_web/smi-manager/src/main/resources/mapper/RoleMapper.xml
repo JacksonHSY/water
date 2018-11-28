@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.smi.manager.mapper.RoleMapper">
+  <resultMap id="BaseResultMap" type="com.ymkj.smi.manager.common.entity.Role">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="ROLE_CODE" jdbcType="VARCHAR" property="roleCode" />
+    <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="MENO" jdbcType="VARCHAR" property="meno" />
+    <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+  </resultMap>
+  
+  <resultMap id="FunctionResultMap" type="com.ymkj.smi.manager.common.entity.Function">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="F_NAME" jdbcType="VARCHAR" property="fName" />
+    <result column="F_TYPE" jdbcType="VARCHAR" property="fType" />
+    <result column="F_CODE" jdbcType="VARCHAR" property="fCode" />
+    <result column="PARENT_NODE" jdbcType="VARCHAR" property="parentNode" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="SORT" jdbcType="VARCHAR" property="sort" />
+    <result column="DESCRIBER" jdbcType="VARCHAR" property="describer" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="CREATEP_TIME" jdbcType="DATE" property="createpTime" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+  </resultMap>
+  
+  <select id="queryFunctionByRoleId" parameterType="String" resultMap="FunctionResultMap">
+		select f.* ,case when ISNULL(rf.func_id) then 'false'  else 'true' end as checked
+		from function f  left join  role_function rf on f.id=rf.func_id 
+		and f.f_type='1' 
+		and rf.rol_id='${_parameter}'
+	</select>
+	
+	<select id="queryFunctionByUserIdAndFunctionCode" parameterType="Map" resultMap="FunctionResultMap">
+		select distinct f.*,case when ISNULL(rf.func_id) then 'false'  else 'true' end as checked
+		  from function f
+		 inner join role_function rf
+		    on f.id = rf.func_id
+		 inner join admin_user_role sr
+		    on sr.rol_id = rf.rol_id
+	    where f.f_type = '${fType}'
+	    and f.parent_node = '${parentNode}'
+		and sr.adm_id = ${userId}
+		and f.status = '1'
+        <if test="fCode!=null and fCode!=''">  
+         AND f.F_CODE = #{fCode} 
+      	</if>
+		order by f.SORT asc
+	</select>
+	
+	<select id="findRoleAdminUser" parameterType="String" resultMap="BaseResultMap">
+		select r.* from role r where id in (select rol_id from admin_user_role where adm_id = #{userId}) and status = '1'
+	</select>
+	
+	<select id="getRoleByJno" parameterType="String" resultMap="BaseResultMap">
+		select r.* from admin_User s,role r,admin_User_role sr where
+		sr.ADM_ID=s.id and
+		sr.ROL_ID=r.id and
+		s.jno='${_parameter}'
+	</select>
+  
+</mapper>

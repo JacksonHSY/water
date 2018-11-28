@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.smi.manager.mapper.CustomerMapper">
+  <resultMap id="BaseResultMap" type="com.ymkj.smi.manager.common.entity.Customer">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="CUS_NAME" jdbcType="VARCHAR" property="cusName" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="CREATER" jdbcType="VARCHAR" property="creater" />
+    <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+    
+    <result column="MMSI_CODE" jdbcType="VARCHAR" property="mmsiCode" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="S_NATURE" jdbcType="VARCHAR" property="sNature" />
+    <result column="S_NAME" jdbcType="VARCHAR" property="sName" />
+    <result column="SHIP_ID" jdbcType="DATE" property="shipId" />
+  </resultMap>
+  <select id="getCustomerShipList" parameterType="Map" resultMap="BaseResultMap">
+  	select c.id,
+  	cs.id as SHIP_ID,
+  	cs.CUS_ID,
+  	cs.STATUS,
+  	c.USER_NAME,
+  	c.CUS_NAME,
+  	c.PHONE,
+  	cs.MMSI_CODE,
+  	cs.ADDRESS,
+  	cs.S_NATURE,
+  	cs.S_NAME 
+  	from  customer c
+  	LEFT JOIN customer_ship cs ON cs.CUS_ID=c.ID 
+  	where c.STATUS='1'and cs.STATUS='1'
+  		<if test="sNature!= null and sNature!= '' ">  
+          AND cs.S_NATURE = #{sNature} 
+        </if>
+		<if test="sName!= null and sName!= '' ">  
+          AND cs.S_NAME LIKE concat(concat('%', #{sName}),'%')
+        </if>
+        order by c.CREATE_TIME desc
+  </select>
+  
+  <insert id="insertCustomer" parameterType="com.ymkj.smi.manager.common.entity.Customer" useGeneratedKeys="true" keyProperty="id">
+        insert into customer(PASSWORD,STATUS,CREATE_TIME,CUS_NAME,PHONE) values (#{password},#{status},#{createTime},#{cusName},#{phone})
+    </insert>
+</mapper>

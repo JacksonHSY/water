@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.smi.manager.mapper.AnnouncementMapper">
+  <resultMap id="BaseResultMap" type="com.ymkj.smi.manager.common.entity.Announcement">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="TITLE" jdbcType="VARCHAR" property="title" />
+    <result column="RELEASE_CHANNEL" jdbcType="VARCHAR" property="releaseChannel" />
+    <result column="ISSUE" jdbcType="VARCHAR" property="issue" />
+    <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="CONTENT" jdbcType="VARCHAR" property="content" />
+  </resultMap>
+   <select id="selectAnnouncementListByConditions" parameterType="com.ymkj.smi.manager.common.entity.Announcement" resultMap="BaseResultMap">
+		select t.id,
+		t.TITLE,
+		t.CREATE_TIME,
+		t.RELEASE_CHANNEL,
+		t.CONTENT,
+		t.issue
+		from announcement t where status= #{status} 
+        <if test="title!=null and title!='' ">  
+         AND t.TITLE LIKE concat(concat('%', #{title}),'%')
+      	</if>
+		<if test="createTimeStr!=null and createTimeStr!='' ">  
+          AND date_format(t.CREATE_TIME,'%Y-%m-%d')= #{createTimeStr}
+      	</if>
+      	<if test="releaseChannel!=null and releaseChannel!='' ">  
+         AND t.RELEASE_CHANNEL = #{releaseChannel} 
+      	</if>
+      	ORDER BY t.CREATE_TIME DESC
+	</select>
+	<select id="selectAnnouncementListByConditionsForWeb" parameterType="com.ymkj.smi.manager.common.entity.Announcement" resultMap="BaseResultMap">
+		select t.id,
+		t.TITLE,
+		t.CREATE_TIME,
+		t.RELEASE_CHANNEL,
+		t.issue
+		from announcement t where status= #{status} 
+        <if test="title!=null and title!='' ">  
+         AND t.TITLE LIKE concat(concat('%', #{title}),'%')
+      	</if>
+		<if test="createTime!=null and createTime!='' ">  
+         AND date_format(t.CREATE_TIME,'%Y-%m-%d') &lt;= #{createTime} 
+      	</if>
+      	<if test="releaseChannel!=null and releaseChannel!='' ">  
+         AND t.RELEASE_CHANNEL != #{releaseChannel} 
+      	</if>
+      	ORDER BY t.Id DESC,t.CREATE_TIME DESC
+	</select>
+</mapper>

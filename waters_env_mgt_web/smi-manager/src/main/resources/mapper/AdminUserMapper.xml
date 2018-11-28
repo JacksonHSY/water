@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.smi.manager.mapper.AdminUserMapper">
+  <resultMap id="BaseResultMap" type="com.ymkj.smi.manager.common.entity.AdminUser">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="JNO" jdbcType="VARCHAR" property="jno" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="E_TYPE" jdbcType="VARCHAR" property="eType" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="MEMO" jdbcType="VARCHAR" property="memo" />
+    <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+    <result column="ROLE_NAME" jdbcType="VARCHAR" property="roleName" />
+    <result column="ROL_ID" jdbcType="VARCHAR" property="rolId" />
+  </resultMap>
+  
+  <select id="getAdminUserList" parameterType="Map" resultMap="BaseResultMap">
+		select t.id,
+		t.JNO,
+		t.NAME,
+		t.E_TYPE,
+		t.PHONE,
+		t.STATUS,
+		t.MEMO,
+		aur.ROL_ID,
+		lt.ROLE_NAME
+		from admin_user t
+		left join admin_user_role aur on t.id = aur.adm_id
+		left join role lt on lt.id = aur.rol_id
+		where 1=1
+        <if test="jno!=null and jno!=''">  
+         AND t.JNO = #{jno} 
+      	</if>
+		<if test="name!=null and name!=''">  
+         AND t.NAME = #{name} 
+      	</if>
+      	<if test="status!=null and status!=''">  
+         AND t.STATUS = #{status} 
+      	</if>
+      	order by t.CREATE_TIME desc
+	</select>
+	
+	<select id="getAdminUser" parameterType="com.ymkj.smi.manager.common.entity.AdminUser"
+		resultMap="BaseResultMap">
+		select t.* from admin_User t where 1=1
+		<if test="jno != null and jno != '' "> and t.JNO = #{jno} </if>
+	</select>
+  
+</mapper>

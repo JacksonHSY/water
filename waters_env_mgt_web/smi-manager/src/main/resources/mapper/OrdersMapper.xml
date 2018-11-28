@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.smi.manager.mapper.OrdersMapper">
+  <resultMap id="BaseResultMap" type="com.ymkj.smi.manager.common.entity.Orders">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="CUS_ID" jdbcType="BIGINT" property="cusId" />
+    <result column="TASK_CODE" jdbcType="VARCHAR" property="taskCode" />
+    <result column="TASK_STATUS" jdbcType="VARCHAR" property="taskStatus" />
+    <result column="TASK_TYPE" jdbcType="VARCHAR" property="taskType" />
+    <result column="WOR_ID" jdbcType="BIGINT" property="worId" />
+    <result column="CUSTOMER_SHIP_ID" jdbcType="BIGINT" property="customerShipId" />
+    <result column="ADRESS" jdbcType="VARCHAR" property="adress" />
+    <result column="IF_TYPE" jdbcType="VARCHAR" property="ifType" />
+    <result column="CHARGE_TYPE" jdbcType="VARCHAR" property="chargeType" />
+    <result column="CHARGE_AMOUNT" jdbcType="VARCHAR" property="chargeAmount" />
+    <result column="E_LIFE" jdbcType="VARCHAR" property="eLife" />
+    <result column="F_LIFE" jdbcType="VARCHAR" property="fLife" />
+    <result column="E_SWEEPING" jdbcType="VARCHAR" property="eSweeping" />
+    <result column="F_SWEEPING" jdbcType="VARCHAR" property="fSweeping" />
+    <result column="E_FOOD" jdbcType="VARCHAR" property="eFood" />
+    <result column="F_FOOD" jdbcType="VARCHAR" property="fFood" />
+    <result column="E_BURN_CINDER" jdbcType="VARCHAR" property="eBurnCinder" />
+    <result column="F_BURN_CINDER" jdbcType="VARCHAR" property="fBurnCinder" />
+    <result column="E_PLASTIC" jdbcType="VARCHAR" property="ePlastic" />
+    <result column="F_PLASTIC" jdbcType="VARCHAR" property="fPlastic" />
+    <result column="E_WATER" jdbcType="VARCHAR" property="eWater" />
+    <result column="F_WATER" jdbcType="VARCHAR" property="fWater" />
+    <result column="E_GUNGO" jdbcType="VARCHAR" property="eGungo" />
+    <result column="F_GUNGO" jdbcType="VARCHAR" property="fGungo" />
+    <result column="WORK_DATE" jdbcType="TIMESTAMP" property="workDate" />
+    <result column="SERVICE_DATE" jdbcType="TIMESTAMP" property="serviceDate" />
+    <result column="RESON" jdbcType="VARCHAR" property="reson" />
+    <result column="TOLL_COLLECTOR" jdbcType="BIGINT" property="tollCollector" />
+    <result column="JUDGE" jdbcType="VARCHAR" property="judge" />
+    <result column="JUDGE_TIME" jdbcType="TIMESTAMP" property="judgeTime" />
+    <result column="MEMO" jdbcType="VARCHAR" property="memo" />
+    <result column="CREATER" jdbcType="VARCHAR" property="creater" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="AMOUNT_GARBAGE" jdbcType="VARCHAR" property="amountGarbage" />
+    <result column="AMOUNT_GARBAGE_FOR_SHOW" jdbcType="VARCHAR" property="amountGarbageForShow" />
+    <result column="SHOW_TIME" jdbcType="TIMESTAMP" property="showTime" />
+    <result column="workShipName" jdbcType="VARCHAR" property="workShipName" />
+    <result column="customerShipName" jdbcType="VARCHAR" property="customerShipName" />
+    <result column="tollCollectorName" jdbcType="VARCHAR" property="tollCollectorName" />
+    <result column="workDateStr" jdbcType="VARCHAR" property="workDateStr" />
+    <result column="totalJudge" jdbcType="INTEGER" property="totalJudge" />
+    <result column="size" jdbcType="DOUBLE" property="size" />
+    <result column="CHARGE" jdbcType="VARCHAR" property="charge" />
+    <result column="OBJ_NAME" jdbcType="VARCHAR" property="objName" />
+    <result column="TASK_STATUS_NAME" jdbcType="VARCHAR" property="taskStatusName" />
+     <result column="TASK_TYPE_NAME" jdbcType="VARCHAR" property="taskTypeName" />
+    <result column="weekNum" jdbcType="VARCHAR" property="weekNum" />
+    <result column="AUR_PHONE" jdbcType="VARCHAR" property="aurPhone" />
+    <result column="days" jdbcType="VARCHAR" property="days" />
+  </resultMap>
+  
+  <resultMap id="StatisticResultMap" type="com.ymkj.smi.manager.common.vo.GarbageReportBO">
+    <result column="garbage_total" jdbcType="DECIMAL" property="garbageTotal" />
+    <result column="water_total" jdbcType="DECIMAL" property="waterTotal" />
+    <result column="food_total" jdbcType="DECIMAL" property="foodTotal" />
+    <result column="plastic_total" jdbcType="DECIMAL" property="plasticTotal" />
+    <result column="sweeping_total" jdbcType="DECIMAL" property="sweepingTotal" />
+    <result column="burn_cinder_total" jdbcType="DECIMAL" property="burnCinderTotal" />
+    <result column="gungo_total" jdbcType="DECIMAL" property="gungoTotal" />
+  </resultMap>
+  
+    <select id="selectOrderListByConditions"  parameterType="com.ymkj.smi.manager.common.entity.Orders" resultMap="BaseResultMap">
+  		select od.ID,od.task_Code,od.task_Status,od.task_Type,cs.S_NAME as customerShipName,ws.NAME as workShipName, 
+		od.ADRESS, od.IF_TYPE,	od.CHARGE_AMOUNT,od.AMOUNT_GARBAGE, od.CHARGE_TYPE,
+		CONCAT_WS('/',od.e_Life,case when od.f_Life is null then '--' else od.f_Life end ) as f_Life,
+		CONCAT_WS('/',od.e_Sweeping,case when od.f_Sweeping is null then '--' else od.f_Sweeping end ) as f_Sweeping,
+		CONCAT_WS('/',od.e_Food,case when od.f_Food is null then '--' else od.f_Food end ) as f_Food,
+		CONCAT_WS('/',od.e_BURN_CINDER,case when od.f_BURN_CINDER is null then '--' else od.f_BURN_CINDER end ) as f_BURN_CINDER,
+		CONCAT_WS('/',od.e_Plastic,case when od.f_Plastic is null then '--' else od.f_Plastic end ) as f_Plastic,
+		CONCAT_WS('/',od.e_Water,case when od.f_Water is null then '--' else od.f_Water end ) as f_Water,
+		CONCAT_WS('/',od.e_Gungo,case when od.f_Gungo is null then '--' else od.f_Gungo end ) as f_Gungo,
+		od.service_Date,od.RESON,au.NAME as tollCollectorName,od.memo ,
+		case od.CHARGE_TYPE when '收费' then od.CHARGE_AMOUNT else od.CHARGE_TYPE end as CHARGE,
+		 date_format(od.work_Date,'%Y-%c-%d %H:%i:%s') as workDateStr,
+		 od.AMOUNT_GARBAGE_FOR_SHOW
+			from orders od LEFT JOIN customer_ship cs on od.CUSTOMER_SHIP_ID = cs.ID LEFT JOIN  
+			work_ship ws on od.WOR_ID = ws.ID LEFT JOIN admin_user au on od.TOLL_COLLECTOR = au.ID 
+			where 1=1
+		 <if test="taskStatus!=null and taskStatus !='' ">  
+        	 AND od.task_Status = #{taskStatus}
+      	 </if>
+      	 <if test="taskType!=null and taskType !='' ">  
+        	 AND od.task_Type = #{taskType}
+      	 </if>
+      	  <if test=" worId !=null and worId !='' ">  
+        	 AND od.WOR_ID = #{worId}
+      	 </if>
+      	  <if test=" customerShipId !=null and customerShipId !='' ">  
+        	 AND od.CUSTOMER_SHIP_ID = #{customerShipId}
+      	 </if>
+      	  <if test=" tollCollector !=null and tollCollector !='' ">  
+        	 AND od.TOLL_COLLECTOR = #{tollCollector}
+      	 </if>
+		ORDER BY od.CREATE_TIME desc
+   </select>
+   <select id="selectOrdersCount"  parameterType="Map"	resultType="String">
+   		select count(*) 
+   		from orders od
+   		where od.task_Status in ('4','5')
+   		<if test="dateBegin!=null and dateBegin !='' ">  
+        	 AND date_format(od.WORK_DATE,'%Y-%m-%d %H:%i:%s') >= #{dateBegin}
+      	 </if>
+      	 <if test="dateEnd!=null and dateEnd !='' ">  
+        	 AND date_format(od.WORK_DATE,'%Y-%m-%d %H:%i:%s') &lt;= #{dateEnd}
+      	 </if>
+   		<if test="tollCollector!=null and tollCollector !='' ">  
+        	 AND od.TOLL_COLLECTOR = #{tollCollector}
+      	</if>
+      	<if test="taskCode!=null and taskCode !='' ">  
+        	 AND od.TASK_CODE = #{taskCode}
+      	</if>
+      	order by od.CREATE_TIME desc
+   	
+   </select>
+   <select id="selectOrders"  parameterType="Map"	resultMap="BaseResultMap">
+   		select od.*,
+   		aur.phone as AUR_PHONE,
+   		CASE od.TASK_STATUS 
+				WHEN '0' THEN '待分派'
+				WHEN '1' THEN '待处理'
+				WHEN '2' THEN '处理中'
+				WHEN '3' THEN '已取消'
+				WHEN '4' THEN '已完成'
+				WHEN '5' THEN '已评价'
+			END AS TASK_STATUS_NAME,
+			CASE od.TASK_TYPE
+				WHEN '0' THEN '废弃物接收'
+				WHEN '1' THEN '水面保洁'
+				WHEN '2' THEN '河滩保洁'
+				WHEN '3' THEN '紧急任务'
+			END AS TASK_TYPE_NAME,
+   		cs.S_NAME as customerShipName,
+   		ws.NAME as workShipName
+   		from orders od 
+   		left join customer_ship cs on od.CUSTOMER_SHIP_ID = cs.ID
+   		left join work_ship ws on od.WOR_ID = ws.ID
+   		left join admin_user aur on aur.id = od.TOLL_COLLECTOR
+   		where cs.status='1'
+   		<if test="dateBegin!=null and dateBegin !='' ">  
+        	 AND date_format(od.CREATE_TIME,'%Y-%m-%d %H:%i:%s') >= #{dateBegin}
+      	 </if>
+      	 <if test="dateEnd!=null and dateEnd !='' ">  
+        	 AND date_format(od.CREATE_TIME,'%Y-%m-%d %H:%i:%s') &lt;= #{dateEnd}
+      	 </if>
+   		<if test="tollCollector!=null and tollCollector !='' ">  
+        	 AND od.TOLL_COLLECTOR = #{tollCollector}
+      	</if>
+      	<if test="cusId!=null and cusId !='' ">  
+        	 AND od.CUS_ID = #{cusId}
+      	</if>
+      	<if test="taskCode!=null and taskCode !='' ">  
+        	 AND od.TASK_CODE = #{taskCode}
+      	</if>
+      	order by od.CREATE_TIME desc
+   </select>
+   <select id="selectWorkOrders"  parameterType="Map"	resultMap="BaseResultMap">
+   		select od.*,date_format(od.WORK_DATE,'%H:%i') as SHOW_TIME,
+   		aur.phone as AUR_PHONE,
+   		CASE od.TASK_STATUS 
+				WHEN '0' THEN '待分派'
+				WHEN '1' THEN '待处理'
+				WHEN '2' THEN '处理中'
+				WHEN '3' THEN '已取消'
+				WHEN '4' THEN '已完成'
+				WHEN '5' THEN '已评价'
+			END AS TASK_STATUS_NAME,
+			CASE od.TASK_TYPE
+				WHEN '0' THEN '废弃物接收'
+				WHEN '1' THEN '水面保洁'
+				WHEN '2' THEN '河滩保洁'
+				WHEN '3' THEN '紧急任务'
+			END AS TASK_TYPE_NAME,
+   		cs.S_NAME as customerShipName,
+   		ws.NAME as workShipName
+   		from orders od 
+   		left join customer_ship cs on od.CUSTOMER_SHIP_ID = cs.ID
+   		left join work_ship ws on od.WOR_ID = ws.ID
+   		left join admin_user aur on aur.id = od.TOLL_COLLECTOR
+   		where 1=1
+   		<if test="dateBegin!=null and dateBegin !='' ">  
+        	 AND date_format(od.WORK_DATE,'%Y-%m-%d %H:%i:%s') >= #{dateBegin}
+      	 </if>
+      	 <if test="dateEnd!=null and dateEnd !='' ">  
+        	 AND date_format(od.WORK_DATE,'%Y-%m-%d %H:%i:%s') &lt;= #{dateEnd}
+      	 </if>
+   		<if test="tollCollector!=null and tollCollector !='' ">  
+        	 AND od.TOLL_COLLECTOR = #{tollCollector}
+      	</if>
+      	<if test="cusId!=null and cusId !='' ">  
+        	 AND od.CUS_ID = #{cusId}
+      	</if>
+      	<if test="taskCode!=null and taskCode !='' ">  
+        	 AND od.TASK_CODE = #{taskCode}
+      	</if>
+      	<if test="status!=null "> 
+      	 	AND od.TASK_STATUS in 
+        	 <foreach collection="status" item="item" index="index"
+	            open="(" close=")" separator=",">
+	            #{item}
+        	</foreach>
+      	</if>
+      	order by od.WORK_DATE 
+   </select>
+    <select id="getOrdersForAmountGarbageTop"  parameterType="Map"	resultMap="BaseResultMap">
+  		select  ws.NAME as workShipName,
+		SUM(AMOUNT_GARBAGE_FOR_SHOW) as AMOUNT_GARBAGE_FOR_SHOW
+		from orders os LEFT JOIN work_ship ws on os.WOR_ID = ws.ID
+		where os.TASK_STATUS in ('4','5')  AND ws.NAME IS NOT NULL
+	 	<choose>
+	        <when test="workDate!=null and workDate !=''">
+	             AND date_format(WORK_DATE,'%Y-%m')=date_format(#{workDate},'%Y-%m') 
+	        </when>
+	        <otherwise>
+	         	 AND date_format(WORK_DATE,'%Y-%m')=date_format(now(),'%Y-%m') 
+	        </otherwise>
+  		 </choose>
+		GROUP BY os.WOR_ID order by AMOUNT_GARBAGE_FOR_SHOW DESC LIMIT #{size}
+   </select>
+   
+    <select id="getOrdersForOrdersSumTop"  parameterType="Map"	resultMap="BaseResultMap">
+  		select  ws.NAME as workShipName,
+		COUNT(os.id) as memo
+		from orders os LEFT JOIN work_ship ws on os.WOR_ID = ws.ID
+		where os.TASK_STATUS in ('4','5')  AND ws.NAME IS NOT NULL
+	 	<choose>
+	        <when test="workDate!=null and workDate !=''">
+	             AND date_format(WORK_DATE,'%Y-%m')=date_format(#{workDate},'%Y-%m') 
+	        </when>
+	        <otherwise>
+	         	 AND date_format(WORK_DATE,'%Y-%m')=date_format(now(),'%Y-%m') 
+	        </otherwise>
+  		 </choose>
+		GROUP BY os.WOR_ID order by memo DESC LIMIT #{size}
+   </select>
+     <select id="getOrdersForHighPraiseTop5" resultMap="BaseResultMap">
+  		select  ws.NAME as workShipName,
+		count(os.id) as size,
+		sum(os.JUDGE) as totalJudge
+		from orders os LEFT JOIN work_ship ws on os.WOR_ID = ws.ID
+		where os.TASK_STATUS in ('4','5') AND os.JUDGE IS NOT NULL	AND date_format(WORK_DATE,'%Y-%m')=date_format(now(),'%Y-%m') 
+		GROUP BY os.WOR_ID order by totalJudge DESC LIMIT 5
+   </select>
+   
+   <select id="getDailyStatisticPageList"  parameterType="Map" resultMap="BaseResultMap">
+  		select od.ID,
+  		cs.S_NAME as customerShipName,
+  		ws.NAME as workShipName, 
+		od.ADRESS, 
+		od.IF_TYPE,
+		od.CHARGE_AMOUNT,
+		od.AMOUNT_GARBAGE_FOR_SHOW,
+		od.CHARGE_TYPE,
+		od.AMOUNT_GARBAGE,
+		case od.CHARGE_TYPE when '收费' then od.CHARGE_AMOUNT else od.CHARGE_TYPE end as CHARGE,
+		od.f_Life,
+		od.f_Sweeping,
+		od.f_Food, 
+		od.F_BURN_CINDER,
+		od.f_Plastic,
+		od.f_Water,
+		od.f_gungo,
+		od.service_Date,
+		od.RESON,
+		au.NAME as tollCollectorName,
+		od.memo ,
+		date_format(od.work_Date,'%Y-%m-%d') as workDateStr
+		from orders od 
+		LEFT JOIN customer_ship cs on od.CUSTOMER_SHIP_ID = cs.ID 
+		LEFT JOIN work_ship ws on od.WOR_ID = ws.ID 
+		LEFT JOIN admin_user au on od.TOLL_COLLECTOR = au.ID 
+		where od.TASK_STATUS in ('4','5')
+		 <if test="adress!=null and adress !='' ">  
+        	 AND od.ADRESS LIKE concat(concat('%', #{adress}),'%')
+      	 </if>
+      	 <if test="workDateStr!=null and workDateStr !='' ">  
+        	 AND date_format(od.work_Date,'%Y-%m-%d') = #{workDateStr}
+      	 </if>
+      	  <if test=" worId !=null and worId !='' ">  
+        	 AND od.WOR_ID = #{worId}
+      	 </if>
+      	  <if test=" customerShipId !=null and customerShipId !='' ">  
+        	 AND od.CUSTOMER_SHIP_ID = #{customerShipId}
+      	 </if>
+      	  <if test=" tollCollector !=null and tollCollector !='' ">  
+        	 AND od.TOLL_COLLECTOR = #{tollCollector}
+      	 </if>
+		ORDER BY od.CREATE_TIME
+   </select>
+   
+    <select id="getMonthStatisticByCustomer"  parameterType="Map" resultMap="BaseResultMap">
+  		select od.ID,
+		cs.S_NAME as OBJ_NAME,
+		SUM(od.f_Life) as F_LIFE,
+		SUM(od.f_Sweeping) as F_SWEEPING,
+		SUM(od.f_Food) as F_FOOD, 
+		SUM(od.F_BURN_CINDER) as F_BURN_CINDER,
+		SUM(od.f_Plastic) as F_PLASTIC,
+		SUM(od.f_gungo) as F_GUNGO,
+		SUM(od.f_Water) as F_WATER,
+		SUM(od.AMOUNT_GARBAGE_FOR_SHOW) as AMOUNT_GARBAGE_FOR_SHOW
+		from customer_ship cs 
+		LEFT JOIN orders od on od.CUSTOMER_SHIP_ID = cs.ID 
+		where od.TASK_STATUS in ('4','5') 
+      	 <if test="dateBegin!=null and dateBegin !='' ">  
+        	 AND date_format(od.work_Date,'%Y-%m-%d') >= #{dateBegin}
+      	 </if>
+      	 <if test="dateEnd!=null and dateEnd !='' ">  
+        	 AND date_format(od.work_Date,'%Y-%m-%d') &lt;= #{dateEnd}
+      	 </if>
+		GROUP BY od.CUSTOMER_SHIP_ID
+   </select>
+   
+   <select id="getMonthStatisticByLiaison"  parameterType="Map" resultMap="BaseResultMap">
+  		select od.ID,
+		au.NAME as OBJ_NAME,
+		SUM(od.f_Life) as F_LIFE,
+		SUM(od.f_Sweeping) as F_SWEEPING,
+		SUM(od.f_Food) as F_FOOD, 
+		SUM(od.F_BURN_CINDER) as F_BURN_CINDER,
+		SUM(od.f_Plastic) as F_PLASTIC,
+		SUM(od.F_GUNGO) as F_GUNGO,
+		SUM(od.f_Water) as F_WATER,
+		SUM(od.AMOUNT_GARBAGE_FOR_SHOW) as AMOUNT_GARBAGE_FOR_SHOW
+		from admin_user au 
+		LEFT JOIN orders od on od.TOLL_COLLECTOR = au.ID 
+		where od.TASK_STATUS in ('4','5') 
+      	 <if test="dateBegin!=null and dateBegin !='' ">  
+        	 AND date_format(od.work_Date,'%Y-%m-%d') >= #{dateBegin}
+      	 </if>
+      	 <if test="dateEnd!=null and dateEnd !='' ">  
+        	 AND date_format(od.work_Date,'%Y-%m-%d') &lt;= #{dateEnd}
+      	 </if>
+		GROUP BY od.TOLL_COLLECTOR
+   </select>
+   
+    <select id="getMonthStatisticByWorkShip"  parameterType="Map" resultMap="BaseResultMap">
+  		select od.ID,
+		ws.NAME as OBJ_NAME,
+		SUM(od.f_Life) as F_LIFE,
+		SUM(od.f_Sweeping) as F_SWEEPING,
+		SUM(od.f_Food) as F_FOOD, 
+		SUM(od.F_BURN_CINDER) as F_BURN_CINDER,
+		SUM(od.f_Plastic) as F_PLASTIC,
+		SUM(od.f_Water) as F_WATER,
+		SUM(od.F_GUNGO) as F_GUNGO,
+		SUM(od.AMOUNT_GARBAGE_FOR_SHOW) as AMOUNT_GARBAGE_FOR_SHOW
+		from work_ship ws
+		LEFT JOIN orders od  on od.WOR_ID = ws.ID 
+		where od.TASK_STATUS in ('4','5') 
+      	 <if test="dateBegin!=null and dateBegin !='' ">  
+        	 AND date_format(od.work_Date,'%Y-%m-%d') >= #{dateBegin}
+      	 </if>
+      	 <if test="dateEnd!=null and dateEnd !='' ">  
+        	 AND date_format(od.work_Date,'%Y-%m-%d') &lt;= #{dateEnd}
+      	 </if>
+		GROUP BY od.WOR_ID
+   </select>
+   
+    <select id="queryGarbageTotalByDate"  parameterType="Map" resultMap="StatisticResultMap">
+  		SELECT 
+			ifnull(sum(o.F_LIFE),0)  AS garbage_total,
+			ifnull(sum(o.F_WATER),0)	  AS water_total,
+			ifnull(sum(o.F_FOOD),0)	  AS food_total,
+			ifnull(sum(o.F_PLASTIC),0)	  AS plastic_total,
+			ifnull(sum(o.F_SWEEPING),0)		  AS sweeping_total,
+			ifnull(sum(o.F_BURN_CINDER),0)	  AS burn_cinder_total,
+			ifnull(sum(o.F_GUNGO),0)	  AS gungo_total
+		FROM orders o
+		WHERE o.TASK_STATUS in ('4','5')
+		 <if test=" timeType !=null and timeType !='' ">  
+			<choose>
+		        <when test="timeType == 'curMonth'">
+		           and DATE_FORMAT(o.CREATE_TIME, '%Y%m') = DATE_FORMAT(CURDATE() ,'%Y%m' );
+		        </when>
+		        <when test="timeType == 'lastMonth'">
+		           and PERIOD_DIFF(date_format(now() , '%Y%m' ) , date_format(o.CREATE_TIME, '%Y%m' ) ) =1;
+		        </when>
+		        <when test="timeType == 'curYear'">
+		           and YEAR(o.CREATE_TIME)=YEAR(NOW());
+		        </when>
+		        <when test="timeType == 'lastYear'">
+		           and YEAR(o.CREATE_TIME)=YEAR(DATE_SUB(NOW(),INTERVAL 1 YEAR));
+		        </when>
+		        <otherwise>
+		           and 1=1
+		        </otherwise>
+		    </choose>
+      	 </if>
+   </select>
+    <select id="getWorkShipReportByWeeks" parameterType="Long" resultMap="BaseResultMap">
+  		select   		
+		SUM(AMOUNT_GARBAGE) as AMOUNT_GARBAGE,
+		SUM(AMOUNT_GARBAGE_FOR_SHOW) as AMOUNT_GARBAGE_FOR_SHOW,
+		SUM(F_LIFE) as F_LIFE,
+		SUM(F_SWEEPING) as F_SWEEPING,
+		SUM(F_FOOD) as F_FOOD,
+		SUM(F_BURN_CINDER) as F_BURN_CINDER,
+		SUM(F_PLASTIC) as F_PLASTIC,
+		SUM(F_WATER) as F_WATER,
+		DATE_FORMAT(os.WORK_DATE,'%Y%u') as weeks,
+		(day(DATE_FORMAT(os.WORK_DATE,'%Y-%m-%d'))+WEEKDAY(DATE_FORMAT(os.WORK_DATE,'%Y-%m-%d')-interval day(	DATE_FORMAT(os.WORK_DATE,'%Y-%m-%d')) day)) div 7 + 1 as weekNum,
+		COUNT(os.ID) as size
+		from orders os LEFT JOIN admin_user au on os.TOLL_COLLECTOR = au.ID
+		where au.id = #{id} and 
+		os.TASK_STATUS in ('4','5')  AND	date_format(WORK_DATE,'%Y-%m')=date_format(now(),'%Y-%m') 
+		GROUP BY weeks order by weekNum
+   </select>
+   
+    <select id="getWorkShipReportByDays" parameterType="Long" resultMap="BaseResultMap">
+  		select t2.days,ifnull(t3.AMOUNT_GARBAGE,0) AS AMOUNT_GARBAGE,ifnull(t3.AMOUNT_GARBAGE_FOR_SHOW,0) AS AMOUNT_GARBAGE_FOR_SHOW,
+				ifnull(t3.F_LIFE,0) AS F_LIFE,ifnull(t3.F_SWEEPING,0) AS F_SWEEPING,
+				ifnull(t3.F_FOOD,0) AS F_FOOD,ifnull(t3.F_BURN_CINDER,0) AS F_BURN_CINDER,ifnull(t3.F_PLASTIC,0) AS F_PLASTIC,
+				ifnull(t3.F_WATER,0) AS F_WATER,t3.workDateStr,ifnull(t3.size,0) AS size	from   
+    (SELECT ADDDATE(y.first, x.d - 1) as days FROM (
+		SELECT 1 AS d UNION ALL
+		SELECT 2 UNION ALL
+		SELECT 3 UNION ALL
+		SELECT 4 UNION ALL
+		SELECT 5 UNION ALL
+		SELECT 6 UNION ALL
+		SELECT 7 UNION ALL
+		SELECT 8 UNION ALL
+		SELECT 9 UNION ALL
+		SELECT 10 UNION ALL
+		SELECT 11 UNION ALL
+		SELECT 12 UNION ALL
+		SELECT 13 UNION ALL
+		SELECT 14 UNION ALL
+		SELECT 15 UNION ALL
+		SELECT 16 UNION ALL
+		SELECT 17 UNION ALL
+		SELECT 18 UNION ALL
+		SELECT 19 UNION ALL
+		SELECT 20 UNION ALL
+		SELECT 21 UNION ALL
+		SELECT 22 UNION ALL
+		SELECT 23 UNION ALL
+		SELECT 24 UNION ALL
+		SELECT 25 UNION ALL
+		SELECT 26 UNION ALL
+		SELECT 27 UNION ALL
+		SELECT 28 UNION ALL
+		SELECT 29 UNION ALL
+		SELECT 30 UNION ALL
+		SELECT 31 ) x,
+		(SELECT CURDATE() - INTERVAL DAY(CURDATE()) - 1 DAY AS first,    DAY(LAST_DAY(CURDATE())) AS last) y WHERE x.d &lt;= y.last) t2  
+		LEFT JOIN  
+		    (select   		
+				SUM(AMOUNT_GARBAGE) as AMOUNT_GARBAGE,
+				SUM(AMOUNT_GARBAGE_FOR_SHOW) as AMOUNT_GARBAGE_FOR_SHOW,
+				SUM(F_LIFE) as F_LIFE,
+				SUM(F_SWEEPING) as F_SWEEPING,
+				SUM(F_FOOD) as F_FOOD,
+				SUM(F_BURN_CINDER) as F_BURN_CINDER,
+				SUM(F_PLASTIC) as F_PLASTIC,
+				SUM(F_WATER) as F_WATER,
+				DATE_FORMAT(os.WORK_DATE,'%Y-%m-%d') as workDateStr,
+				COUNT(os.ID) as size
+				from orders os LEFT JOIN admin_user au on os.TOLL_COLLECTOR = au.ID
+				where au.id =#{id} and 
+				os.TASK_STATUS in ('4','5')  AND	date_format(WORK_DATE,'%Y-%m')=date_format(now(),'%Y-%m') 
+				GROUP BY workDateStr) t3
+			on t2.days = t3.workDateStr  order by t2.days 
+   </select>
+      <select id="getJudgeList" parameterType="Long" resultMap="BaseResultMap">
+  		select  
+		os.*,
+		cs.S_NAME as customerShipName
+		from customer_ship cs left join	orders os on cs.id = os.CUSTOMER_SHIP_ID LEFT JOIN admin_user au on os.TOLL_COLLECTOR = au.ID
+		
+		where au.id=#{id} and
+		os.TASK_STATUS in('4','5') AND	date_format(WORK_DATE,'%Y-%m')=date_format(now(),'%Y-%m') order by os.CREATE_TIME desc
+   </select>
+</mapper>

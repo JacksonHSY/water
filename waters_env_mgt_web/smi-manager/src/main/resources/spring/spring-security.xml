@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+	http://www.springframework.org/schema/security 
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+ 	<!-- 未登录的切入点 -->
+    <beans:bean id="myAuthenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <beans:property name="loginFormUrl" value="/admin/auth/login"></beans:property>
+    </beans:bean>
+    
+	<!--  不需要权限验证的页面 -->
+	<http pattern="/department/list" security="none" />
+	<http pattern="/dictionary/**" security="none" />    
+   	<http pattern="/admin/auth/**" security="none" />
+   	<http pattern="/healthCheck" security="none" />
+   	<http pattern="/static/**" security="none" />
+   	<http pattern="/admin/orders/*ForOption" security="none" />
+   	<http pattern="/WEB-INF/views/login.jsp" security="none" />
+   	<http pattern="/WEB-INF/views/verifyCodeImage.jsp" security="none" />
+   	<http pattern="/Api/**" security="none" />
+    
+	<http use-expressions="true" entry-point-ref="myAuthenticationEntryPoint" access-denied-page="/admin/auth/denied" auto-config="false">
+        <!--访问/**资源的用户必须具有ROLE_USER的权限  access="ROLE_USER" access="ROLE_ADMIN"-->
+        <!-- 只有拥有权限的人才能访问  -->
+        <intercept-url pattern="/**" access="isAuthenticated()" />
+        <!-- 自定义过滤器 (需要自定义权限放开此配置)-->
+       <custom-filter ref="mySecurityFilter" before="FILTER_SECURITY_INTERCEPTOR"/><!-- -->
+	</http>
+	
+    <!-- 实现了UserDetailsService的Bean 用户拥有的权限：登录后取得用户所保有的权限信息  -->
+	<authentication-manager alias="myAuthenticationManager">
+		<authentication-provider user-service-ref="myUserDetailService" />
+	</authentication-manager>
+	
+</beans:beans>

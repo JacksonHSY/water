@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.smi.manager.mapper.FunctionMapper">
+  <resultMap id="BaseResultMap" type="com.ymkj.smi.manager.common.entity.Function">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="F_NAME" jdbcType="VARCHAR" property="fName" />
+    <result column="F_TYPE" jdbcType="VARCHAR" property="fType" />
+    <result column="F_CODE" jdbcType="VARCHAR" property="fCode" />
+    <result column="PARENT_NODE" jdbcType="VARCHAR" property="parentNode" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="SORT" jdbcType="VARCHAR" property="sort" />
+    <result column="DESCRIBER" jdbcType="VARCHAR" property="describer" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="CREATEP_TIME" jdbcType="DATE" property="createpTime" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+  </resultMap>
+  
+  <select id="getFuncList" parameterType="com.ymkj.smi.manager.common.entity.Function"
+		resultMap="BaseResultMap">
+		select t.* from function t where 1=1 and t.parent_node not
+		in('0','-1')
+		<if test="id != null and id != '' "> and t.id = #{id} </if>
+		<if test="fType != null and fType != '' "> and t.f_type = #{fType} </if>
+	</select>
+	
+	<select id="getMenuByRoleId" parameterType="String" resultMap="BaseResultMap">
+		select f.* ,case rf.func_id when null then 'false'  else 'true' end as checked
+		from
+		function f inner join role_function rf on f.id=rf.func_id
+		and f.f_type='1'
+		and rf.ROL_ID='${_parameter}'
+	</select>
+  
+</mapper>

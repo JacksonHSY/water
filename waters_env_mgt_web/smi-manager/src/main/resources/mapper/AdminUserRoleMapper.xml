@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.smi.manager.mapper.AdminUserRoleMapper">
+  <resultMap id="BaseResultMap" type="com.ymkj.smi.manager.common.entity.AdminUserRole">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="ROL_ID" jdbcType="BIGINT" property="rolId" />
+    <result column="ADM_ID" jdbcType="BIGINT" property="admId" />
+  </resultMap>
+</mapper>

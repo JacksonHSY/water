@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.smi.manager.mapper.CustomerShipMapper">
+  <resultMap id="BaseResultMap" type="com.ymkj.smi.manager.common.entity.CustomerShip">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="CUS_ID" jdbcType="BIGINT" property="cusId" />
+    <result column="MMSI_CODE" jdbcType="VARCHAR" property="mmsiCode" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="S_NATURE" jdbcType="VARCHAR" property="sNature" />
+    <result column="S_NAME" jdbcType="VARCHAR" property="sName" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="CREATER" jdbcType="VARCHAR" property="creater" />
+    <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+    
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="CUS_NAME" jdbcType="VARCHAR" property="cusName" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="CUSTOMER_SHIP_ID" jdbcType="BIGINT" property="customerShipId" />
+    <result column="CUSTOMER_SHIP_NAME" jdbcType="VARCHAR" property="customerShipName" />
+  </resultMap>
+  
+  <select id="getShipsByCusId" parameterType="Map" resultMap="BaseResultMap">
+  
+  		select t.id as CUSTOMER_SHIP_ID,
+  		t.S_NAME as CUSTOMER_SHIP_NAME
+  		from customer_ship t
+  		where t.STATUS = '1'
+  		<if test="cusId!= null and cusId!= '' ">  
+          AND t.CUS_ID = #{cusId} 
+        </if>
+  </select>
+  
+  <select id="getCustomerShipList" parameterType="Map" resultMap="BaseResultMap">
+  	select c.id,
+  	cs.CUS_ID,
+  	cs.STATUS,
+  	c.USER_NAME,
+  	c.CUS_NAME,
+  	c.PHONE,
+  	cs.MMSI_CODE,
+  	cs.ADDRESS,
+  	cs.S_NATURE,
+  	cs.S_NAME 
+  	from  customer c
+  	LEFT JOIN customer_ship cs ON cs.CUS_ID=c.ID 
+  	where c.STATUS='1' and cs.STATUS='1'
+  		<if test="sNature!= null and sNature!= '' ">  
+          AND cs.S_NATURE = #{sNature} 
+        </if>
+		<if test="sName!= null and sName!= '' ">  
+          AND cs.S_NAME LIKE concat(concat('%', #{sName}),'%')
+        </if>
+        order by c.CREATE_TIME desc
+  </select>
+  
+   <insert id="insertCustomerShip" parameterType="com.ymkj.smi.manager.common.entity.CustomerShip" useGeneratedKeys="true" keyProperty="id">
+        insert into customer_ship(CUS_ID,MMSI_CODE,ADDRESS,S_NATURE,S_NAME,STATUS,CREATER,CREATE_TIME,UPDATE_TIME)
+         values (#{cusId},#{mmsiCode},#{address},#{sNature},#{sName},#{status},#{creater},#{createTime},#{updateTime})
+    </insert>
+</mapper>

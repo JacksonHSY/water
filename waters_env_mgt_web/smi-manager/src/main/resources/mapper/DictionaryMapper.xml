@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.smi.manager.mapper.DictionaryMapper">
+  <resultMap id="BaseResultMap" type="com.ymkj.smi.manager.common.entity.Dictionary">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="DATA_TYPE" jdbcType="VARCHAR" property="dataType" />
+    <result column="DATA_CODE" jdbcType="VARCHAR" property="dataNo" />
+    <result column="DATA_NAME" jdbcType="VARCHAR" property="dataName" />
+    <result column="DATA_VALUE" jdbcType="VARCHAR" property="dataValue" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="MEMO" jdbcType="VARCHAR" property="memo" />
+    <result column="CREATEP_TIME" jdbcType="DATE" property="createpTime" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+  </resultMap>
+</mapper>

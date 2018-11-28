@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.smi.manager.mapper.WorkShipMapper">
+  <resultMap id="BaseResultMap" type="com.ymkj.smi.manager.common.entity.WorkShip">
+
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="SHIP_NATURE" jdbcType="VARCHAR" property="shipNature" />
+    <result column="CAPTAIN" jdbcType="VARCHAR" property="captain" />
+    <result column="MEMO" jdbcType="VARCHAR" property="memo" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="CREATER" jdbcType="VARCHAR" property="creater" />
+    <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="DATE" property="updateTime" />
+    
+    <result column="WORK_SHIP_ID" jdbcType="BIGINT" property="workShipId" />
+    <result column="WORK_SHIP_NAME" jdbcType="VARCHAR" property="workShipName" />
+     <result column="S_NAME" jdbcType="VARCHAR" property="sName" />
+  </resultMap>
+  
+    <select id="getShips" parameterType="Map" resultMap="BaseResultMap">
+  
+  		select t.id as WORK_SHIP_ID,
+  		t.NAME as WORK_SHIP_NAME
+  		from work_ship t
+  		where t.STATUS = '1'
+  
+  </select>
+  
+   <select id="getWorkShipForOptionCheck" resultMap="BaseResultMap">
+  		select DISTINCT ws.ID ,ws.NAME from work_ship ws where ws.STATUS=1 AND ws.id not in(
+		select DISTINCT WOR_ID FROM orders where TASK_STATUS=2
+	)
+   </select>
+   <select id="getCaptainGroup" resultMap="BaseResultMap">
+  		SELECT distinct CAPTAIN,ID FROM work_ship ws WHERE ws.`STATUS`='1' GROUP BY ws.CAPTAIN
+   </select>
+</mapper>
